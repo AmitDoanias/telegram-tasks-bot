@@ -31,7 +31,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif message == "רשימה":
         if task_list:
             response = "📋 רשימת המשימות שלך:
-" + "\n".join([f"• {t}" for t in task_list])
+" + "
+".join([f"• {t}" for t in task_list])
         else:
             response = "אין כרגע משימות ברשימה 🎉"
         await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
