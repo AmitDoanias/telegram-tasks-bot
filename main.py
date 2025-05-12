@@ -2,11 +2,19 @@ import logging
 import time
 import schedule
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, CallbackQueryHandler, filters
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes,
+    MessageHandler,
+    CallbackQueryHandler,
+    filters
+)
 
 TOKEN = "7782428550:AAFLxweTZgGk97m3VGEridLvbLMZ8uFqR0Y"
 USER_ID = 529035487
 WEBHOOK_URL = "https://telegram-tasks-bot.onrender.com/webhook"
+
 task_list = []
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -24,7 +32,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message.text
-
     if message.startswith("הוסף:") or message == "הוסף משימה":
         if message.startswith("הוסף:"):
             task_item = message.replace("הוסף:", "").strip()
@@ -50,7 +57,6 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     data = query.data
-
     if data.startswith("done|"):
         task_done = data.split("|")[1]
         if task_done in task_list:
@@ -76,8 +82,8 @@ def run_scheduler(application):
         schedule.run_pending()
         time.sleep(60)
 
-async def set_webhook(app):
-    await app.bot.set_webhook(url=WEBHOOK_URL)
+async def set_webhook(application):
+    await application.bot.set_webhook(WEBHOOK_URL)
 
 def main():
     application = ApplicationBuilder().token(TOKEN).build()
@@ -88,14 +94,4 @@ def main():
     import threading
     threading.Thread(target=run_scheduler, args=(application,), daemon=True).start()
 
-    application.run_webhook(
-        listen="0.0.0.0",
-        port=10000,
-        webhook_path="/webhook",
-        on_startup=set_webhook,
-        allowed_updates=Update.ALL_TYPES,
-        webhook_url=WEBHOOK_URL
-    )
-
-if __name__ == "__main__":
-    main()
+    application
