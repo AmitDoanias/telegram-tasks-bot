@@ -20,7 +20,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if message.startswith("הוסף:"):
         task_item = message.replace("הוסף:", "").strip()
         task_list.append(task_item)
-        await context.bot.send_message(chat_id=update.effective_chat.id, text=f"המשימה "{task_item}" נוספה לרשימה ✅")
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=f'המשימה "{task_item}" נוספה לרשימה ✅')
+
     elif message.startswith("סיימתי:"):
         done_task = message.replace("סיימתי:", "").strip()
         if done_task in task_list:
