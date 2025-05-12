@@ -1,6 +1,7 @@
 import logging
 import time
 import schedule
+import os
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
@@ -94,4 +95,13 @@ def main():
     import threading
     threading.Thread(target=run_scheduler, args=(application,), daemon=True).start()
 
-    application
+    application.run_webhook(
+        listen="0.0.0.0",
+        port=int(os.environ.get("PORT", 10000)),
+        url_path="webhook",
+        webhook_url=WEBHOOK_URL,
+        on_startup=set_webhook
+    )
+
+if __name__ == "__main__":
+    main()
