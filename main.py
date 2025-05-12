@@ -6,7 +6,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Messa
 
 TOKEN = "7782428550:AAFLxweTZgGk97m3VGEridLvbLMZ8uFqR0Y"
 USER_ID = 529035487
-
+WEBHOOK_URL = "https://telegram-tasks-bot.onrender.com/webhook"
 task_list = []
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -76,6 +76,9 @@ def run_scheduler(application):
         schedule.run_pending()
         time.sleep(60)
 
+async def set_webhook(app):
+    await app.bot.set_webhook(url=WEBHOOK_URL)
+
 def main():
     application = ApplicationBuilder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
@@ -84,7 +87,15 @@ def main():
 
     import threading
     threading.Thread(target=run_scheduler, args=(application,), daemon=True).start()
-    application.run_polling()
+
+    application.run_webhook(
+        listen="0.0.0.0",
+        port=10000,
+        webhook_path="/webhook",
+        on_startup=set_webhook,
+        allowed_updates=Update.ALL_TYPES,
+        webhook_url=WEBHOOK_URL
+    )
 
 if __name__ == "__main__":
     main()
