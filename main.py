@@ -17,10 +17,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message.text
-    if message.startswith("הוסף:"):
+        if message.startswith("הוסף:"):
         task_item = message.replace("הוסף:", "").strip()
         task_list.append(task_item)
-       await context.bot.send_message(chat_id=update.effective_chat.id, text=f'המשימה "{task_item}" נוספה לרשימה ✅')
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=f'המשימה 	"{task_item}" נוספה לרשימה ✅')
+
 
     elif message.startswith("סיימתי:"):
         done_task = message.replace("סיימתי:", "").strip()
