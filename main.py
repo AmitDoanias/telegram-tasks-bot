@@ -1,4 +1,3 @@
-
 import logging
 import time
 import schedule
@@ -30,26 +29,20 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_message(chat_id=update.effective_chat.id, text="המשימה לא נמצאה 🤔")
     elif message == "רשימה":
         if task_list:
-            response = "📋 רשימת המשימות שלך:
-" + "
-".join([f"• {t}" for t in task_list])
+            response = "📋 רשימת המשימות שלך:\n" + "\n".join([f"• {t}" for t in task_list])
         else:
             response = "אין כרגע משימות ברשימה 🎉"
         await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 async def send_evening_reminder(context: ContextTypes.DEFAULT_TYPE):
     if task_list:
-        tasks = "
-".join([f"• {t}" for t in task_list])
-        await context.bot.send_message(chat_id=USER_ID, text=f"🌙 ערב טוב עמית! הנה המשימות למחר:
-{tasks}")
+        tasks = "\n".join([f"• {t}" for t in task_list])
+        await context.bot.send_message(chat_id=USER_ID, text=f"🌙 ערב טוב עמית! הנה המשימות למחר:\n{tasks}")
 
 async def send_morning_reminder(context: ContextTypes.DEFAULT_TYPE):
     if task_list:
-        tasks = "
-".join([f"• {t}" for t in task_list])
-        await context.bot.send_message(chat_id=USER_ID, text=f"☀️ בוקר טוב עמית! המשימות שלך להיום:
-{tasks}")
+        tasks = "\n".join([f"• {t}" for t in task_list])
+        await context.bot.send_message(chat_id=USER_ID, text=f"☀️ בוקר טוב עמית! המשימות שלך להיום:\n{tasks}")
 
 def run_scheduler(application):
     schedule.every().day.at("21:00").do(lambda: application.create_task(send_evening_reminder(application.bot)))
