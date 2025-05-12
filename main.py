@@ -95,12 +95,14 @@ def main():
     import threading
     threading.Thread(target=run_scheduler, args=(application,), daemon=True).start()
 
+    # Set webhook explicitly before run_webhook
+    application.run_async(set_webhook(application))
+
     application.run_webhook(
         listen="0.0.0.0",
         port=int(os.environ.get("PORT", 10000)),
         url_path="webhook",
-        webhook_url=WEBHOOK_URL,
-        on_startup=set_webhook
+        webhook_url=WEBHOOK_URL
     )
 
 if __name__ == "__main__":
