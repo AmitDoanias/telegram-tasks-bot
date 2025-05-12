@@ -84,10 +84,7 @@ def run_scheduler(application):
         schedule.run_pending()
         time.sleep(60)
 
-async def set_webhook(application):
-    await application.bot.set_webhook(WEBHOOK_URL)
-
-def main():
+async def main():
     application = ApplicationBuilder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
@@ -96,10 +93,9 @@ def main():
     import threading
     threading.Thread(target=run_scheduler, args=(application,), daemon=True).start()
 
-    # קובע את ה־Webhook לפני ההפעלה
-    asyncio.run(set_webhook(application))
+    await application.bot.set_webhook(WEBHOOK_URL)
 
-    application.run_webhook(
+    await application.run_webhook(
         listen="0.0.0.0",
         port=int(os.environ.get("PORT", 10000)),
         url_path="webhook",
@@ -107,4 +103,4 @@ def main():
     )
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
