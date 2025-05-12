@@ -2,6 +2,7 @@ import logging
 import time
 import schedule
 import os
+import asyncio
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
@@ -95,8 +96,8 @@ def main():
     import threading
     threading.Thread(target=run_scheduler, args=(application,), daemon=True).start()
 
-    # Set webhook explicitly before run_webhook
-    application.run_async(set_webhook(application))
+    # קובע את ה־Webhook לפני ההפעלה
+    asyncio.run(set_webhook(application))
 
     application.run_webhook(
         listen="0.0.0.0",
