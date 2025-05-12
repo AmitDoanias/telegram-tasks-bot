@@ -2,6 +2,7 @@ import logging
 import time
 import schedule
 import os
+import threading
 import asyncio
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -84,18 +85,19 @@ def run_scheduler(application):
         schedule.run_pending()
         time.sleep(60)
 
-async def main():
+def main():
     application = ApplicationBuilder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     application.add_handler(CallbackQueryHandler(handle_callback))
 
-    import threading
     threading.Thread(target=run_scheduler, args=(application,), daemon=True).start()
 
-    await application.bot.set_webhook(WEBHOOK_URL)
+    # הגדרת webhook לפני הריצה
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(application.bot.set_webhook(WEBHOOK_URL))
 
-    await application.run_webhook(
+    application.run_webhook(
         listen="0.0.0.0",
         port=int(os.environ.get("PORT", 10000)),
         url_path="webhook",
@@ -103,4 +105,4 @@ async def main():
     )
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
