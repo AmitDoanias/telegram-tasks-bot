@@ -39,20 +39,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def send_evening_reminder(context: ContextTypes.DEFAULT_TYPE):
     if task_list:
-        tasks = "\n".join([f"• {t}" for t in task_list])
+        tasks = "
+".join([f"• {t}" for t in task_list])
         await context.bot.send_message(chat_id=USER_ID, text=f"🌙 ערב טוב עמית! הנה המשימות למחר:
 {tasks}")
 
 async def send_morning_reminder(context: ContextTypes.DEFAULT_TYPE):
     if task_list:
-        tasks = "\n".join([f"• {t}" for t in task_list])
+        tasks = "
+".join([f"• {t}" for t in task_list])
         await context.bot.send_message(chat_id=USER_ID, text=f"☀️ בוקר טוב עמית! המשימות שלך להיום:
 {tasks}")
 
 def run_scheduler(application):
     schedule.every().day.at("21:00").do(lambda: application.create_task(send_evening_reminder(application.bot)))
     schedule.every().day.at("08:45").do(lambda: application.create_task(send_morning_reminder(application.bot)))
-
     while True:
         schedule.run_pending()
         time.sleep(60)
@@ -64,7 +65,6 @@ def main():
 
     import threading
     threading.Thread(target=run_scheduler, args=(application,), daemon=True).start()
-
     application.run_polling()
 
 if __name__ == "__main__":
